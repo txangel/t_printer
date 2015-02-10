@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1 Tweets about #{term}
+  table
+    tr
+      td User
+      td Text
+      td Sentiment
+      td Count
+    each val in tweets
+      tr
+        td= val.user_handle
+        td
+          each word in val.message
+            if word.hit
+              em #{word.string}
+            else
+              = word.string
+            = ' '
+        td= val.sentiment
+        td= val.count || "N/A"
