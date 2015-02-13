@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h1 Tweets about #{term}
+  h1#top Tweets about #{term}
   table
     tr
       td User
@@ -21,4 +21,4 @@ block content
         td= val.sentiment
         td= val.count || "N/A"
 
-  button#reload(onclick='window.location.reload()') Load more
+  button#reload Load more

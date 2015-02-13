@@ -22,10 +22,11 @@ var Tweet = Backbone.Model.extend({
     defaults: {
         message: '',
         sentiment: -1,
-        user_handle: ''
+        user_handle: '',
+        count: 1
     },
 
-    //@todo: Use views
+    //better is to use backbone views in the frontend and sync both collections (that way the server keeps data persistent)
     to_render: function(term){
         var result = this.toJSON();
 
@@ -37,17 +38,42 @@ var Tweet = Backbone.Model.extend({
 
 var TweetList = Backbone.Collection.extend({
     model: Tweet,
-    url: 'http://adaptive-test-api.herokuapp.com/tweets.json',
+
+    initialize: function() {
+        this.sort_key = 'sentiment';
+    },
+
     comparator: function(l, r){
-        if(r.sentiment > l.sentiment) return 1;
-        if(r.sentiment < l.sentiment) return -1;
+        if(r.get('sentiment') > l.get('sentiment')) return 1;
+        if(r.get('sentiment') < l.get('sentiment')) return -1;
         return 0;
     },
 
-    parse: function(response){
-        return _.map(response, function(each){
-            return _.pick(each, 'message', 'sentiment', 'user_handle');
-        });
+    fetch_from_outside: function(){
+        var promise = new $.Deferred();
+        var self = this;
+
+        $.get('http://adaptive-test-api.herokuapp.com/tweets.json')
+            .done(function(raw_tweets) {
+                _.each(raw_tweets, function (each) {
+                    var candidate = _.pick(each, 'message', 'sentiment', 'user_handle');
+                    var duplicate = self.findWhere({message: candidate.message}); //Not sure about this. What if the sentiment is different.
+                    //if the id is unique do:
+                    //var duplicate = self.findWhere({aa_id: candidate.aa_id});
+                    //and add aa_id to the attributes
+                    if(duplicate) {
+                        duplicate.set('count', duplicate.get('count') + 1);
+                    } else {
+                        self.add(candidate);
+                    }
+                });
+                promise.resolve(self);
+            })
+            .fail(function(err){
+                promise.reject(err);
+            });
+
+        return promise;
     },
 
     to_render: function(term) {

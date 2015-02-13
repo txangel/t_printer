@@ -4,6 +4,14 @@ $ = require('jquery');
 _ = require('underscore');
 Backbone = require('backbone');
 Backbone.$ = $;
+
+/**
+ * In memory storage
+ */
+var Tweet = require('../models/tweet');
+ALL_TWEETS = new Tweet.TweetList();
+ALL_TWEETS.fetch_from_outside();
+
 /**
  * Module dependencies.
  */
@@ -18,6 +26,7 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+
 
 /**
  * Create HTTP server.

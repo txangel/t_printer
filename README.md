@@ -16,9 +16,7 @@ installation is a Python 2 piece of software)
 ### Missing still:
 
 1. Automated tests (for instance the comparator seems finally right but it might not be)
-2. Aggregating the repeated hits
-3. Making the parse accumulate data instead of replace (maybe I need to customise fetch)
-4. Serializing the collection to some storage (there are a few npm packages because few people use backbone directly with nodejs (and in production you end up with a DB in the backend anyways. Writing and testing a custom adapter is easy but it takes a few hours)
+2. Serializing the collection to some more permanent storage (there are a few npm packages because few people use backbone directly with nodejs (and in production you end up with a DB in the backend anyways. Writing and testing a custom adapter is easy but it takes a few hours)
 
 ### Things I wasted time on:
 
